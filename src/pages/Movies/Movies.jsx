@@ -2,11 +2,9 @@ import { getMovieBySearch } from '../../api/MovieDbApi';
 import FilmList from 'components/FilmList/FilmList';
 import Search from 'components/Search/Search';
 import React, { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 
 function Movies() {
-  const [searchParams] = useSearchParams();
   const [films, setFilms] = useState([]);
  
   const onSearch = (search) => {    
@@ -20,7 +18,7 @@ function Movies() {
 
   return (
     <>
-      <Search onSearch={onSearch} search={searchParams.get('search')} />
+      <Search onSearch={onSearch} />
       <FilmList films={films} />
       <Toaster position="top-right"/>
     </>

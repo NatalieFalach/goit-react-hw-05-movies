@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import {SearchForm, SearchFormButton, Input} from './Search.styled';
 import { useSearchParams } from "react-router-dom";
 
-function Search({onSearch, search}) {
+function Search({onSearch}) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [value, setValue] = useState(() => {
-    return search ? search : ''
+    return searchParams.get('search') ? searchParams.get('search') : ''
   });
 
   useMount(() => {
