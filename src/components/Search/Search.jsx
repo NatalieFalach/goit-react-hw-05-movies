@@ -1,20 +1,12 @@
 import { useState } from "react";
-import { useMount } from 'react-use';
 import PropTypes from 'prop-types';
-import {SearchForm, SearchFormButton, Input} from './Search.styled';
-import { useSearchParams } from "react-router-dom";
+import { SearchForm, SearchFormButton, Input } from './Search.styled';
+import toast, { Toaster } from 'react-hot-toast';
 
-function Search({onSearch}) {
-  const [searchParams, setSearchParams] = useSearchParams();
+function Search({onSearch, searchValue}) {
   const [value, setValue] = useState(() => {
-    return searchParams.get('search') ? searchParams.get('search') : ''
+    return searchValue ?? '';
   });
-
-  useMount(() => {
-    if (value) {
-      onSearch(value);
-    }
-  })
 
   const onChange = (e) => {
     setValue(e.target.value)
@@ -22,11 +14,12 @@ function Search({onSearch}) {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (value) {
-      setSearchParams({search: value});
-      onSearch(value);      
-      setValue('');
+    if (!value.trim()) {
+      toast.error('Empty search query')
+      return;
     }
+    onSearch(value);      
+    setValue('');
   }
 
   return (
@@ -38,7 +31,9 @@ function Search({onSearch}) {
         />
         <SearchFormButton type="submit"></SearchFormButton>
       </SearchForm>
+      <Toaster position="top-right"/>
     </div>
+    
   );
 }
 
@@ -46,5 +41,5 @@ export default Search;
 
 Search.propTypes = {
   onSearch: PropTypes.func.isRequired,
-  search: PropTypes.string
+  searchValue: PropTypes.string
 };

@@ -5,21 +5,24 @@ import { Container, Wrapper, Img, Info, StyledLink, Button, SubMenu ,ButtonBack}
 import { Outlet } from "react-router-dom";
 import { Suspense } from "react";
 import getImageUrl from "helpers/getImageUrl";
-import { useMemo } from "react";
+import Spinner from "components/Spinner/Spinner";
 
 const MovieDetails = () => {
   const { filmId } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
   const location = useLocation();
-
-  const backLinkHref = useMemo(() => {
-    return location.state?.from ?? "/";
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filmId])  
+  const backLinkHref = location.state?.from ?? "/";
 
   useEffect(() => {
+    setIsLoading(true);
+
     getFilmById(filmId).then((data) => {
      setData(data);
+    }).catch((error) => {
+      console.log(error.message)
+    }).finally(() => {
+      setIsLoading(false);
     })
   }, [filmId])
 
@@ -30,6 +33,7 @@ const MovieDetails = () => {
   return (
     <>
       <StyledLink to={backLinkHref}><ButtonBack>Back</ButtonBack></StyledLink>
+      {isLoading && <Spinner/>}
       {data && (
         <Container>
           <Img src={getImageUrl(data.poster_path)} alt={data.title} />
@@ -41,13 +45,13 @@ const MovieDetails = () => {
             <h4>Genres</h4>
             <Info>{getGenres(data.genres)}</Info>
             <SubMenu>
-              <li><StyledLink to="cast"><Button>Cast</Button></StyledLink></li>
-              <li><StyledLink to="reviews"><Button>Reviews</Button></StyledLink></li>
+              <li><StyledLink to="cast" state={{from: backLinkHref}}><Button>Cast</Button></StyledLink></li>
+              <li><StyledLink to="reviews" state={{from: backLinkHref}}><Button>Reviews</Button></StyledLink></li>
             </SubMenu>
           </Wrapper>
         </Container>
       )}
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Spinner />}>
         <Outlet />
       </Suspense>
     </>
