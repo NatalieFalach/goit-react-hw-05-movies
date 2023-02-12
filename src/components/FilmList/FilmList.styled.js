@@ -11,6 +11,7 @@ export const FilmItem = styled.li`
 export const StyledLink = styled(Link)`
   text-decoration: none;
   font-weight: 500;
+  color: black;
   cursor: pointer;
 
   &:hover {

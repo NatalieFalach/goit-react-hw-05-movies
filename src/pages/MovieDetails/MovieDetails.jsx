@@ -1,7 +1,7 @@
 import { getFilmById } from "../../api/MovieDbApi";
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { Container, Wrapper, Img, Info, StyledLink, Button, SubMenu ,ButtonBack} from './MovieDetails.styled';
+import { Container, Wrapper, Img, Info, StyledLink, Button, SubMenu ,ButtonBack, ErrorMessage} from './MovieDetails.styled';
 import { Outlet } from "react-router-dom";
 import { Suspense } from "react";
 import getImageUrl from "helpers/getImageUrl";
@@ -11,16 +11,20 @@ const MovieDetails = () => {
   const { filmId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
+  const [error, setError] = useState('');
   const location = useLocation();
   const backLinkHref = location.state?.from ?? "/";
 
   useEffect(() => {
     setIsLoading(true);
-
+    setError('');
     getFilmById(filmId).then((data) => {
-     setData(data);
+      if (!data) {
+        setError('Nothing found');
+      }
+      setData(data);
     }).catch((error) => {
-      console.log(error.message)
+      setError('Ops...try again latter');
     }).finally(() => {
       setIsLoading(false);
     })
@@ -33,7 +37,8 @@ const MovieDetails = () => {
   return (
     <>
       <StyledLink to={backLinkHref}><ButtonBack>Back</ButtonBack></StyledLink>
-      {isLoading && <Spinner/>}
+      {isLoading && <Spinner />}
+      {error && <ErrorMessage>{ error }</ErrorMessage>}
       {data && (
         <Container>
           <Img src={getImageUrl(data.poster_path)} alt={data.title} />
@@ -51,7 +56,7 @@ const MovieDetails = () => {
           </Wrapper>
         </Container>
       )}
-      <Suspense fallback={<Spinner />}>
+      <Suspense>
         <Outlet />
       </Suspense>
     </>

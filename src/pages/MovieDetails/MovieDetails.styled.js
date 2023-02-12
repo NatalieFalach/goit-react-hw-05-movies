@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 export const Container = styled.div`
   display: flex;
@@ -25,9 +25,13 @@ export const SubMenu = styled.ul`
   gap: 30px;
 `;
 
-export const StyledLink = styled(Link)`
+export const StyledLink = styled(NavLink)`
   text-decoration: none;
   margin-top: 15px;
+  &.active button {
+    background: orangered;
+    color: white;
+  }
 `;
 
 export const Button = styled.button`
@@ -57,4 +61,11 @@ export const ButtonBack = styled.button`
     color: white;
     background: orangered;
   }
+`;
+
+export const ErrorMessage = styled.div`
+  margin: 20px auto;
+  width: 180px;
+  font-weight: 700;
+  color: orangered;
 `;

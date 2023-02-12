@@ -5,45 +5,43 @@ import { Trending } from './Home.styled';
 import toast, { Toaster } from 'react-hot-toast';
 import { useInView } from 'react-intersection-observer';
 import Spinner from 'components/Spinner/Spinner';
-import { useEffect } from 'react';
 
 function Home() {
   const [films, setFilms] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
   const { ref } = useInView({
-    "rootMargin": "400px 0px",
+    "rootMargin": "0px 0px",
     onChange: (inView) => {
-      if (inView) {
-        console.log('View is true increment page, ', page)
-        setPage((prev) => prev + 1)
-        // getTrending(page).then(({ results }) => {
-        //   setFilms((prev) => [...prev, ...results]);  
-        // }).catch((e) => {
-        //   toast.error('Oops, try again later')
-        // })
+      if (inView && hasMore) {
+        setIsLoading(true); 
+        getTrending(page).then(({ results, total_pages }) => {
+          if (total_pages === page) {
+            setHasMore(false);
+            return;
+          }
+          setFilms((prev) => [...prev, ...results]);
+          setPage((prev) => prev + 1);
+        })
+        .catch((e) => {
+          toast.error('Oops, try again later')
+        }).finally(() => {
+          setIsLoading(false);
+        })
       }
     }
   });
-
-  useEffect(() => {
-    setIsLoading(true); 
-    getTrending(page).then(({ results }) => {
-      setFilms((prev) => [...prev, ...results]);
-    })
-    .catch((e) => {
-      toast.error('Oops, try again later')
-    }).finally(() => {
-      setIsLoading(false);
-    })
-  }, [page])
 
   return (
     <>
       <Trending>Trending Today</Trending>
       {isLoading && <Spinner/>}
       <FilmList films={films} />
-      <div ref={ref}></div>
+      <div style={{height: '1px'}} ref={ref}>
+        {isLoading && films.length > 0 && <Spinner/>}
+      </div>
       <Toaster position="top-right"/>
     </>
   );

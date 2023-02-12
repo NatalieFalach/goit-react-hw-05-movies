@@ -4,13 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Massage } from './Reviews.styled'
 
-
 function Reviews() {
   const { filmId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [data, setData] = useState([]);
-
 
   useEffect(() => {
     setIsLoading(true);
@@ -21,7 +19,6 @@ function Reviews() {
       }
       setData(data.results);
     }).catch((e) => {
-      console.log(e.message);
       setError('Oops... try again later');
     }).finally(() => {
       setIsLoading(false);

@@ -33,7 +33,6 @@ function Search({onSearch, searchValue}) {
       </SearchForm>
       <Toaster position="top-right"/>
     </div>
-    
   );
 }
 

@@ -13,3 +13,12 @@ export const Actor = styled.li`
   width: 200px;
   font-size: 14px;
 `;
+
+export const Massage = styled.h2`
+  text-align: center;
+  border-top: 1px solid black;
+  display: block;
+  margin-top: 10px;
+  padding-top: 20px;
+  color: orangered;
+`;
