@@ -26,9 +26,6 @@ function Cast() {
     })
   }, [filmId])
   
-  if (isLoading) {
-    return <Spinner/>
-  }
 
   return (
     <>
